@@ -1,0 +1,100 @@
+@startuml
+title
+  PSR-7 Http Message
+endtitle
+
+namespace PSR7.Http.Message {
+  interface MessageInterface {
+    + getProtocolVersion() : string
+    + withProtocolVersion(version:string) : MessageInterface
+    + getHeaders() : string[][]
+    + hasHeader(name:string) : bool
+    + getHeader(name:string) : string[]
+    + getHeaderLine(name:string) : string
+    + withHeader(name:string, val:string|string[]) : MessageInterface
+    + withAddedHeader(name:string, val:string|string[]) : MessageInterface
+    + withoutHeader(name) : MessageInterface
+    + getBody() : StreamInterface
+    + withBody() : MessageInterface
+  }
+  interface RequestInterface {
+    + getRequestTarget() : string
+    + withRequestTarget(target:mixed) : RequestInterface
+    + getMethod() : string
+    + withMethod(method:string) : RequestInterface
+    + getUri() : UriInterface
+    + withUri(uri:UriInterface, preserveHost:bool=false) : RequestInterface
+  }
+  MessageInterface <|-- RequestInterface
+  interface ResponseInterface {
+    + getStatusCode() : int
+    + withStatus(code:int, reasonPhrase:string='') : ResponseInterface
+    + getResponsePhrase() : string
+  }
+  MessageInterface <|-- ResponseInterface
+
+  interface ServerRequestInterface {
+    + getServerParams() : array
+    + getCookieParams() : array
+    + withCookieParams(cookies:array) : ServerRequestInterface
+    + getQueryParams() : array
+    + withQueryParams(query:array) : ServerRequestInterface
+    + getUploadedFiles() : UploadedFileInterface[]
+    + withUploadedFiles(uploadedFiles:UploadedFileInterface[]) : ServerRequestInterface
+    + getParsedBody() : array|object|null
+    + withParsedBody(data:array|object|null) : ServerRequestInterface
+    + getAttributes(): array
+    + getAttribute(name:string, default:mixed=null)) : mixed
+    + withAttribute(name:string, value:mixed) : ServerRequestInterface
+    + withoutAttribute(name:string) : ServerRequestInterface
+  }
+  RequestInterface <|-- ServerRequestInterface
+
+  interface StreamInterface {
+    + __toString() : string
+    + close() : void
+    + detach() : resource|null
+    + getSize() : int|null
+    + tell() : int
+    + eof() : bool
+    + isSeekable() : bool
+    + seek(offset:int, whence:int=SEEK_SET)
+    + rewind()
+    + isWritable() : bool
+    + write(string:string) : int
+    + isReadable() : bool
+    + read(length:int) : string
+    + getContents() : string
+    + getMetadata(key:string) : mixed|null
+  }
+
+  interface UploadedFileInterface {
+    + getStream() : StreamInterface
+    + moveTo(targetPath:string)
+    + getSize() : int|null
+    + getError() : int
+    + getClientFilename() : string|null
+    + getClientMediaType() : string|null
+  }
+
+  interface UriInterface {
+    + getScheme() : string
+    + getAuthority() : string
+    + getUserInfo() : string
+    + getHost() : string
+    + getPort() : int|null
+    + getPath() : string
+    + getQuery() : string
+    + getFragment() : string
+    + withScheme(scheme:string) : UriInterface
+    + withUserInfo(user:string, password:string=null) : UriInterface
+    + withHost(host:string) : UriInterface
+    + withPort(port:int) : UriInterface
+    + withPath(path:string) : UriInterface
+    + withQuery(query:string) : UriInterface
+    + withFragment(fragment:string) : UriInterface
+    + __toString() : string
+  }
+}
+
+@enduml
