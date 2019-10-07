@@ -1,0 +1,48 @@
+@startuml
+
+title
+  PSR-18 HTTP Client
+  PSR-7で入力、PSR-7で出力。
+endtitle
+
+interface Throwable
+
+namespace PSR18.Http.Client {
+  interface ClientInterface {
+    + sendRequest(RequestInterface $request): ResponseInterface
+  }
+  PSR7.Http.Message.RequestInterface <-- ClientInterface : input
+  PSR7.Http.Message.ResponseInterface <-- ClientInterface : output
+
+
+  interface ClientExceptionInterface
+  .Throwable <|-- ClientExceptionInterface
+
+  interface RequestExceptionInterface {
+    + getRequest(): RequestInterface
+  }
+  ClientExceptionInterface <|-- RequestExceptionInterface
+  note bottom of RequestExceptionInterface
+    リクエスト失敗時の例外。
+    リクエストbodyが読めないなど。
+    HTTP400や500を例外にしてはいけない。
+  end note
+
+  interface NetworkExceptionInterface {
+    + getRequest(): RequestInterface
+  }
+  ClientExceptionInterface <|-- NetworkExceptionInterface
+  note bottom of NetworkExceptionInterface
+    ネットワーク問題時の例外。
+    接続失敗、名前解決失敗など
+  end note
+
+  ClientExceptionInterface <- ClientInterface : throw
+}
+
+namespace PSR7.Http.Message {
+  interface RequestInterface
+  interface ResponseInterface
+}
+
+@enduml
