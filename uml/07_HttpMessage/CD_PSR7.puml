@@ -1,6 +1,7 @@
 @startuml
 title
   PSR-7 Http Message
+  基本的に Immutable
 endtitle
 
 namespace PSR7.Http.Message {
@@ -31,6 +32,7 @@ namespace PSR7.Http.Message {
     + withStatus(code:int, reasonPhrase:string='') : ResponseInterface
     + getResponsePhrase() : string
   }
+
   MessageInterface <|-- ResponseInterface
 
   interface ServerRequestInterface {
@@ -48,6 +50,13 @@ namespace PSR7.Http.Message {
     + withAttribute(name:string, value:mixed) : ServerRequestInterface
     + withoutAttribute(name:string) : ServerRequestInterface
   }
+  note bottom of ServerRequestInterface
+    サーバ側(受信側)リクエスト
+    スーパグローバルの抽象化
+    attributeはアプリ固有の情報に使っていい。
+      複数のリクエストコンシューマ間のメッセージングなど。
+      ルーティング結果など
+  endnote
   RequestInterface <|-- ServerRequestInterface
 
   interface StreamInterface {
@@ -67,6 +76,9 @@ namespace PSR7.Http.Message {
     + getContents() : string
     + getMetadata(key:string) : mixed|null
   }
+  note bottom of StreamInterface
+    大抵の場合は、php stream の wrapper になる
+  endnote
 
   interface UploadedFileInterface {
     + getStream() : StreamInterface
@@ -76,6 +88,14 @@ namespace PSR7.Http.Message {
     + getClientFilename() : string|null
     + getClientMediaType() : string|null
   }
+  note bottom of UploadedFileInterface
+    アップロードされたファイルを表すValue Object
+    $_FILES の正規化・抽象化
+      配列の名前を受けても違う構造にならないように
+    非SAPI環境でも動くように実装するべき
+      非SAPI環境の場合はファイルでなく php://temp ストリームを使うとか
+      UTができるように
+  endnote
 
   interface UriInterface {
     + getScheme() : string
@@ -95,6 +115,10 @@ namespace PSR7.Http.Message {
     + withFragment(fragment:string) : UriInterface
     + __toString() : string
   }
+  note bottom of UriInterface
+    URIを表すValue Object
+    HTTP以外のコンテキストでも使える
+  endnote
 }
 
 @enduml
