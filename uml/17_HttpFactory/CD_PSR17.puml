@@ -1,0 +1,64 @@
+@startuml
+
+title
+  PSR-17 HTTP Factory
+  PSR-7(Http Message) のファクトリ
+
+  Zend Diactoros, Guzzle, Slim3などが実装として存在する。
+  独自の要件が追加されている場合が多い。
+  1:1の対応のため、必要なものだけ実装すればいい。
+    たとえばGuzzleはクライアント側のみ、Slim3はサーバ側のみが実装されている
+endtitle
+
+package PSR7.Http.Message {
+  interface MessageInterface
+  interface RequestInterface
+  MessageInterface <|-- RequestInterface
+  interface ResponseInterface
+  MessageInterface <|-- ResponseInterface
+
+  interface ServerRequestInterface
+  RequestInterface <|-- ServerRequestInterface
+
+  interface StreamInterface
+
+  interface UploadedFileInterface
+
+  interface UriInterface
+}
+
+class RuntimeExcepttion
+class InvalidArgumentException
+
+package PSR19.Http.Message {
+  interface RequestFactoryInterface {
+    + createRequest(method:string, uri:UriInterface|string): RequestInterface
+  }
+  RequestInterface <-- RequestFactoryInterface : <<creates>>
+
+  interface ResponseFactoryInterface {
+    + createResponse(code:int=200, reasonPhrase:string="") : ResponseInterface
+  }
+  ResponseInterface <-- ResponseFactoryInterface : <<creates>>
+
+  interface ServerRequestFactoryInterface {
+    + createRequest(method:string, uri:UriInterface|string, serverParams:array): ServerRequestInterface
+  }
+  ServerRequestInterface <-- ServerRequestFactoryInterface : <<creates>>
+
+  interface StreamFactoryInterface {
+    + createStream(content:string='') : StreamInterface
+    + createStreamFromFile(filename:string, mode:string='r') : StreamInterface
+    + createStreamFromResource(resource:resource) : StreamInterface
+  }
+  StreamInterface <-- StreamFactoryInterface : <<creates>>
+  RuntimeExcepttion <-- StreamFactoryInterface : ファイルを開けない
+  InvalidArgumentException <-- StreamFactoryInterface : modeが無効
+
+  interface UploadedFileFactoryInterface {
+    + createUploadedFile(stream:StreamInterface, size:int=null, error:int=UPLOAD_ERR_OK, clientFilename:string=null, clientMediaType:string=null): UploadedFileInterface
+  }
+  UploadedFileInterface <-- UploadedFileFactoryInterface : <<creates>>
+}
+
+@enduml
