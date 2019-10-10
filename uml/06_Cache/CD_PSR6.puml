@@ -1,0 +1,38 @@
+@startuml
+title
+  PSR-6 Cache
+endtitle
+
+package Psr6.Cache {
+  interface CacheItemInterface {
+    + getKey() : string
+    + get() : mixed|null
+    + isHit() : bool
+    + set(value:mixed) : CacheItemInterface
+    + expiresAt(expiration:DateTimeInterface|null) : CacheItemInterface
+    + expiresAfter(time:int) : CacheItemInterface
+  }
+  note bottom of CacheItemInterface : 1件分
+  CacheException <-- CacheItemInterface : throws
+
+  interface CacheItemPoolInterface {
+    + getItem(key:string) : CacheItemInterface
+    + getItems(keys:array=[]) : array|Traversable
+    + hasItem(key:string) : bool
+    + clear() : bool
+    + deleteItem(key:string) : bool
+    + deleteItems(keys:array) : bool
+    + save(item:CacheItemInterface) : bool
+    + saveDeferred(item:CacheItemInterface) : bool
+    + commit() : bool
+  }
+  InvalidArgumentException <- CacheItemPoolInterface : keyとして不正
+  CacheException <-- CacheItemPoolInterface : throws
+
+  interface CacheException
+  note right of CacheException: 実装ライブラリから投げられる例外はすべてこれでマークする
+  interface InvalidArgumentException
+  note bottom of InvalidArgumentException: 無効なキャッシュ引数
+}
+
+@enduml
