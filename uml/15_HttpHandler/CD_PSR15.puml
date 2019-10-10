@@ -1,0 +1,21 @@
+@startuml
+title
+  PSR-15 Http Handlers
+endtitle
+
+package Psr7.Http.Message {
+  interface ServerRequestInterface
+  interface ResponseInterface
+}
+
+package Psr15.Http.Server {
+  interface RequestHandlerInterface {
+    + handle(request:ServerRequestInterface): ResponseInterface
+  }
+
+  interface MiddlewareInterface {
+    + process(request:ServerRequestInterface, handler:RequestHandlerInterface): ResponseInterface
+  }
+}
+
+@enduml
