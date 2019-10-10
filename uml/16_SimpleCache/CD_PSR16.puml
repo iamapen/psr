@@ -1,0 +1,26 @@
+@startuml
+title
+  PSR-16 Simple Cache
+endtitle
+
+
+package Psr16.SimpleCache {
+  interface CacheInterface {
+    + get(key:string, default:mixed=null) : mixed
+    + set(key:string, value:mixed, ttl:int|DateInterval|null=null) : bool
+    + delete(key:string) : bool
+    + clear() : bool
+    + getMultiple(keys:iterable, default:mixed=null) : mixed
+    + setMultiple(values:iterable, ttl:int|DateInterval|null=null) : bool
+    + deleteMultiple(keys:iterable) : bool
+    + has(key:string) : bool
+  }
+  InvalidArgumentException <-- CacheInterface : keyが妥当でない
+
+  interface CacheException
+  note right of CacheException: 実装ライブラリから投げられる例外はすべてこれでマークする
+  interface InvalidArgumentException
+  note bottom of InvalidArgumentException: 無効なキャッシュ引数
+}
+
+@enduml
