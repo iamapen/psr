@@ -1,0 +1,17 @@
+@startuml
+
+namespace Psr.Container {
+  interface ContainerInterface {
+    + get(id:string) :mixed
+    + has(id:string) :bool
+  }
+
+  interface ContainerExceptionIntarface
+  interface NotFoundExceptionInterface
+  ContainerExceptionIntarface <|-- NotFoundExceptionInterface
+
+  ContainerExceptionIntarface <- ContainerInterface : throw
+}
+
+
+@enduml
