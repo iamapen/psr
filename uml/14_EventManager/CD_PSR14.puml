@@ -1,0 +1,33 @@
+@startuml
+title
+  PSR-14 EventManager
+endtitle
+legend top
+  なんかイマイチかなぁ。
+  symfony/event-dispatcher の方が優れてるような。。
+    - setParams(array) はoptionalな値って感じなのかなぁ、必須項目には使えない
+    - 優先度の概念があるのは特徴的。
+endlegend
+
+namespace Psr.EventManager {
+  interface EventInterface {
+    + getName() :string
+    + getTarget() :null|string|object
+    + getParams() :array
+    + getParam(name:string) :mixed
+    + setName(name:string)
+    + setTarget(target:null|string|object)
+    + setParams(params:array)
+    + stopPropagation(flag:bool)
+    + isPropagationStopped() :bool
+  }
+
+  interface EventManagerInterface {
+    + attach(event:string, callback:callable, priority:int) :bool
+    + detach(event:string, callback:callable) :bool
+    + clearListeners(event:string)
+    + trigger(event:string|EventInterface, target:string, argv:array|object) :mixed
+  }
+}
+
+@enduml
